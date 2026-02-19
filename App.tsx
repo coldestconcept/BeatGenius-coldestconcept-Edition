@@ -9,6 +9,30 @@ import { AvianField } from './components/RavenField';
 import { DAWGuide } from './components/DAWGuide';
 import { Vault } from './components/Vault';
 
+// Moved outside to prevent remounting flashes
+interface LogoProps {
+  size?: number;
+  grillStyle: GrillStyle;
+  knifeStyle: KnifeStyle;
+  theme: AppTheme;
+  onClick?: () => void;
+}
+
+const Logo: React.FC<LogoProps> = ({ size = 48, grillStyle, knifeStyle, theme, onClick }) => (
+  <div 
+    className="group relative flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer" 
+    onClick={onClick}
+  >
+    <Mascot 
+      size={size} 
+      grillStyle={grillStyle} 
+      knifeStyle={knifeStyle} 
+      glowColor={theme === 'crazy-bird' ? '#ef4444' : '#0ea5e9'} 
+      className="relative z-10" 
+    />
+  </div>
+);
+
 const App: React.FC = () => {
   const [csvInput, setCsvInput] = useState<string>('');
   const [plugins, setPlugins] = useState<VSTPlugin[]>([]);
@@ -373,13 +397,7 @@ const App: React.FC = () => {
   };
 
   const grillLabel = grillStyle === 'iced-out' ? 'Iced Out' : grillStyle === 'aquaberry-diamond' ? 'Aquaberry' : grillStyle === 'gold' ? 'Gold' : 'Opal';
-  const knifeLabel = { standard: 'Standard', gold: 'Gold', bloody: 'Bloody', adamant: 'Adamant', mythril: 'Mythril', 'samuels-saber': "Samuel's Saber" }[knifeStyle];
-
-  const Logo = ({ size = 48 }) => (
-    <div className="group relative flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer" onClick={cycleGrill}>
-      <Mascot size={size} grillStyle={grillStyle} knifeStyle={knifeStyle} glowColor={theme === 'crazy-bird' ? '#ef4444' : '#0ea5e9'} className="relative z-10" />
-    </div>
-  );
+  const knifeLabel = { standard: 'Standard', gold: 'Gold', bloody: 'Bloody', adamant: 'Adamant', mythril: 'Mythril', 'samuels-saber': "Samuel L's Saber" }[knifeStyle];
 
   const themeClasses = theme === 'coldest' 
     ? "from-[#e0f2fe] via-[#bae6fd] to-[#7dd3fc] text-[#0c4a6e]"
@@ -411,7 +429,7 @@ const App: React.FC = () => {
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in zoom-in duration-300">
           <div className={`w-full max-w-md p-10 rounded-[3rem] border shadow-2xl ${theme === 'coldest' ? 'bg-white' : 'bg-[#111] text-white border-red-900/40'}`}>
              <div className="text-center mb-8">
-                <Logo size={80} />
+                <Logo size={80} grillStyle={grillStyle} knifeStyle={knifeStyle} theme={theme} onClick={cycleGrill} />
                 <h2 className="text-3xl font-black tracking-tighter mt-4">Join the Club</h2>
                 <p className="text-xs opacity-50 uppercase tracking-[0.2em] mt-1">Make a profile to save beats</p>
              </div>
@@ -515,7 +533,7 @@ const App: React.FC = () => {
       <header className={`sticky top-0 z-50 px-6 py-4 border-b transition-all duration-500 backdrop-blur-xl shadow-lg ${theme === 'coldest' ? 'bg-white/20 border-white/30' : 'bg-black/30 border-red-900/40'}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Logo size={42} />
+            <Logo size={42} grillStyle={grillStyle} knifeStyle={knifeStyle} theme={theme} onClick={cycleGrill} />
             <div className="flex flex-col">
               <h1 className={`text-xl font-black tracking-tighter leading-none ${theme === 'coldest' ? 'text-[#0c4a6e]' : 'text-white'}`}>BeatGenius</h1>
               <span className={`text-[9px] font-black uppercase tracking-[0.3em] ${theme === 'coldest' ? 'text-sky-600' : 'text-red-500'}`}>
@@ -527,7 +545,7 @@ const App: React.FC = () => {
             
             <div className="hidden sm:flex gap-2">
               <button onClick={cycleGrill} className={`${actionBtnClasses} ${theme === 'coldest' ? 'bg-white/40 border-white/60 text-[#0c4a6e] hover:bg-sky-100' : 'bg-red-950/40 border-red-800/60 text-red-100 hover:bg-red-900/60'}`}>Grill: {grillLabel}</button>
-              <button onClick={cycleKnife} className={`${actionBtnClasses} ${theme === 'coldest' ? 'bg-white/40 border-white/60 text-[#0c4a6e] hover:bg-sky-100' : 'bg-red-950/40 border-red-800/60 text-red-100 hover:bg-red-900/60'}`}>Knife: {knifeLabel}</button>
+              <button onClick={cycleKnife} className={`${actionBtnClasses} !max-w-none !truncate-none ${theme === 'coldest' ? 'bg-white/40 border-white/60 text-[#0c4a6e] hover:bg-sky-100' : 'bg-red-950/40 border-red-800/60 text-red-100 hover:bg-red-900/60'}`}>Knife: {knifeLabel}</button>
               <button onClick={toggleTheme} className={`${actionBtnClasses} ${theme === 'coldest' ? 'bg-white/40 border-white/60 text-[#0c4a6e] hover:bg-red-100' : 'bg-red-600 border-red-500 text-white hover:bg-red-500'}`}>Theme: {theme === 'coldest' ? 'Coldest' : 'Crazy Bird'}</button>
               <button onClick={() => setShowShareHub(!showShareHub)} className={`${actionBtnClasses} flex items-center gap-1 ${theme === 'coldest' ? 'bg-orange-500 border-orange-600 text-white' : 'bg-black border-red-900/50 text-red-500'}`}>Share & Store</button>
               {user && (
@@ -551,7 +569,7 @@ const App: React.FC = () => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/70 backdrop-blur-md">
           <div className={`w-full max-w-xl transition-all transform backdrop-blur-2xl p-10 rounded-[4rem] shadow-2xl border ${theme === 'coldest' ? 'bg-white/95 border-white' : 'bg-black/95 border-orange-900/30'}`}>
             <div className="text-center">
-              <div className="flex justify-center mb-8"><Logo size={100} /></div>
+              <div className="flex justify-center mb-8"><Logo size={100} grillStyle={grillStyle} knifeStyle={knifeStyle} theme={theme} onClick={cycleGrill} /></div>
               <h2 className={`text-4xl font-black mb-4 tracking-tighter ${theme === 'coldest' ? 'text-[#0c4a6e]' : 'text-white'}`}>Studio Share</h2>
               <p className={`text-sm mb-10 leading-relaxed max-w-sm mx-auto ${theme === 'coldest' ? 'text-[#0c4a6e]/70' : 'text-red-200/60'}`}>
                 Send your list to a friend, or download a private app to use offline on your PC.
@@ -599,8 +617,8 @@ const App: React.FC = () => {
         {plugins.length === 0 ? (
           <div className="max-w-3xl mx-auto mt-12 animate-in fade-in zoom-in duration-1000">
             <div className={`p-12 transition-all backdrop-blur-2xl border rounded-[4rem] shadow-2xl ${theme === 'coldest' ? 'bg-white/30 border-white/40' : 'bg-black/40 border-red-900/30'}`}>
-              <div className="flex items-center gap-6 mb-10">
-                <Logo size={120} />
+              <div className="flex items-center gap-12 mb-10">
+                <Logo size={240} grillStyle={grillStyle} knifeStyle={knifeStyle} theme={theme} onClick={cycleGrill} />
                 <div>
                   <h2 className={`text-5xl font-black tracking-tighter ${theme === 'coldest' ? 'text-[#0c4a6e]' : 'text-white'}`}>Let's go to the top!</h2>
                   <p className={`text-lg font-medium ${theme === 'coldest' ? 'text-[#0c4a6e]/70' : 'text-red-200/60'}`}>Paste your plugin list or upload a file.</p>
@@ -640,7 +658,7 @@ const App: React.FC = () => {
           <div className="space-y-20">
             <section className={`flex flex-col md:flex-row gap-10 items-center justify-between p-10 transition-all backdrop-blur-2xl border rounded-[4rem] shadow-xl ${theme === 'coldest' ? 'bg-white/20 border-white/30' : 'bg-black/40 border-red-900/20'}`}>
               <div className="flex items-center gap-6">
-                <Logo size={64} />
+                <Logo size={64} grillStyle={grillStyle} knifeStyle={knifeStyle} theme={theme} onClick={cycleGrill} />
                 <div>
                   <h2 className={`text-3xl font-black mb-1 tracking-tight ${theme === 'coldest' ? 'text-[#0c4a6e]' : 'text-white'}`}>Studio Info</h2>
                   <p className={`text-sm ${theme === 'coldest' ? 'text-[#0c4a6e]/70' : 'text-red-200/60'}`}>Loaded {plugins.length} plugins from your library.</p>
@@ -689,7 +707,7 @@ const App: React.FC = () => {
 
       <footer className={`py-16 px-6 text-center transition-all ${theme === 'coldest' ? 'text-[#0c4a6e]/20' : 'text-red-950'}`}>
         <div className="flex flex-col items-center gap-4">
-          <Logo size={48} />
+          <Logo size={48} grillStyle={grillStyle} knifeStyle={knifeStyle} theme={theme} onClick={cycleGrill} />
           <p className="text-[10px] font-black uppercase tracking-[0.8em]">BeatGenius / ColdestConcept Edition / 2026</p>
         </div>
       </footer>

@@ -27,7 +27,10 @@ export const Mascot: React.FC<MascotProps> = ({
       fill="none" 
       xmlns="http://www.w3.org/2000/svg"
       className={`${className}`}
-      style={{ filter: `drop-shadow(0 0 ${size * 0.15}px ${glowColor}66)` }}
+      style={{ 
+        filter: `drop-shadow(0 0 ${size * 0.15}px ${glowColor}66)`,
+        transition: 'filter 0.5s ease-in-out'
+      }}
     >
       <style>
         {`
@@ -64,6 +67,9 @@ export const Mascot: React.FC<MascotProps> = ({
           }
           .saber-blade {
             animation: flicker 0.15s infinite;
+          }
+          path, rect, circle, ellipse {
+            transition: fill 0.3s ease-in-out, stroke 0.3s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
           }
         `}
       </style>
@@ -257,16 +263,14 @@ export const Mascot: React.FC<MascotProps> = ({
       </g>
 
       {/* ARMED ASSEMBLY (Knives or Saber) */}
-      {knifeStyle !== 'samuels-saber' ? (
+      <g style={{ opacity: knifeStyle === 'samuels-saber' ? 0 : 1, pointerEvents: knifeStyle === 'samuels-saber' ? 'none' : 'auto' }}>
         <g transform="translate(80, 820) rotate(-45)">
           {/* Knife Handle */}
           <rect x="-100" y="-20" width="140" height="40" rx="6" fill="#111" stroke="black" strokeWidth="3" />
           
           {/* Hand / Fist gripping the handle */}
           <g transform="translate(-80, 0)">
-              {/* Thumb */}
               <ellipse cx="20" cy="-15" rx="25" ry="15" fill="#1e50ff" stroke="black" strokeWidth="2" transform="rotate(-15)" />
-              {/* Fingers wrapping handle */}
               {[0, 25, 50, 75].map((xOffset) => (
                   <rect key={xOffset} x={xOffset} y="-25" width="22" height="50" rx="10" fill="url(#skinGrad)" stroke="black" strokeWidth="2" />
               ))}
@@ -275,9 +279,8 @@ export const Mascot: React.FC<MascotProps> = ({
           {/* Guard */}
           <rect x="35" y="-35" width="15" height="70" rx="4" fill="#222" stroke="black" strokeWidth="2" />
 
-          {/* Blade - Positioned to the side of the head */}
+          {/* Blade */}
           <g transform="translate(50, -28)">
-              {/* Blade Fill Selection */}
               {(() => {
                 let bladeFill = "url(#bladeGrad)";
                 if (knifeStyle === 'gold') bladeFill = "url(#bladeGold)";
@@ -287,7 +290,6 @@ export const Mascot: React.FC<MascotProps> = ({
                 return <path d="M0 0 L280 15 Q320 25 280 40 L0 55 Z" fill={bladeFill} stroke="#111" strokeWidth="3" />;
               })()}
 
-              {/* Blood Overlay for 'bloody' style */}
               {knifeStyle === 'bloody' && (
                 <g>
                   <path d="M120 18 Q160 25 140 38 L80 30 Z" fill="url(#bloodGrad)" opacity="0.8" />
@@ -298,54 +300,38 @@ export const Mascot: React.FC<MascotProps> = ({
                 </g>
               )}
 
-              {/* Blood groove */}
               <path d="M20 22 L240 28" stroke="#000" strokeWidth="2" opacity="0.3" strokeLinecap="round" />
-              {/* Edge highlight */}
               <path d="M10 50 L270 38" stroke="white" strokeWidth="1" opacity="0.5" />
-              {/* Glint effect */}
               <g clipPath="url(#bladeClip)">
                   <rect x="-100" y="-50" width="40" height="200" fill="white" opacity="0.4" className="blade-glint" />
               </g>
           </g>
         </g>
-      ) : (
-        /* SAMUEL'S SABER - Refined Firm Grip */
+      </g>
+
+      <g style={{ opacity: knifeStyle === 'samuels-saber' ? 1 : 0, pointerEvents: knifeStyle === 'samuels-saber' ? 'auto' : 'none' }}>
         <g transform="translate(130, 780)">
-          {/* 1. BACKGROUND FINGERS (Wrapped behind the hilt) */}
           <g>
             {[ -45, -15 ].map((yOffset) => (
                 <rect key={yOffset} x="-35" y={yOffset} width="70" height="25" rx="12" fill="url(#skinGrad)" stroke="black" strokeWidth="3" />
             ))}
           </g>
-
-          {/* 2. LIGHTSABER HILT (Mace Windu Gold/Silver/Black) */}
           <g transform="translate(0, 0)">
-            {/* Main Tube */}
             <rect x="-20" y="-120" width="40" height="180" rx="6" fill="#666" stroke="black" strokeWidth="3" />
-            {/* Grip bands */}
             {[ -100, -80, -60, -40, -20, 0, 20, 40 ].map(y => (
               <rect key={y} x="-20" y={y} width="40" height="8" fill="black" />
             ))}
-            {/* Gold Accents */}
             <rect x="-18" y="-115" width="4" height="170" fill="#eab308" opacity="0.6" />
             <rect x="14" y="-115" width="4" height="170" fill="#eab308" opacity="0.6" />
-            {/* Emitter */}
             <rect x="-25" y="-140" width="50" height="30" rx="4" fill="#333" stroke="black" strokeWidth="3" />
           </g>
-
-          {/* 3. FOREGROUND FINGERS (Wrapped on top of hilt) */}
           <g>
-            {/* Thumb wrapping over the front tightly */}
             <ellipse cx="25" cy="-20" rx="28" ry="18" fill="#1e50ff" stroke="black" strokeWidth="3" transform="rotate(25)" />
-            {/* Lower fingers */}
             {[ 15, 45 ].map((yOffset) => (
                 <rect key={yOffset} x="-35" y={yOffset} width="70" height="25" rx="12" fill="url(#skinGrad)" stroke="black" strokeWidth="3" />
             ))}
           </g>
-
-          {/* 4. VERTICAL PURPLE BLADE (Pointing straight up) */}
           <g transform="translate(0, -140)">
-            {/* Outer Glow */}
             <rect 
               x="-25" 
               y="-600" 
@@ -357,7 +343,6 @@ export const Mascot: React.FC<MascotProps> = ({
               className="saber-blade" 
               style={{ filter: 'blur(20px)' }}
             />
-            {/* Inner Glow */}
             <rect 
               x="-18" 
               y="-590" 
@@ -369,7 +354,6 @@ export const Mascot: React.FC<MascotProps> = ({
               className="saber-blade" 
               style={{ filter: 'blur(8px)' }}
             />
-            {/* White Core */}
             <rect 
               x="-10" 
               y="-580" 
@@ -381,11 +365,10 @@ export const Mascot: React.FC<MascotProps> = ({
             />
           </g>
         </g>
-      )}
+      </g>
 
       {/* 3. LAYER: DU-RAG (Top-most) */}
       <g>
-        {/* Main Cap Part */}
         <path 
           d="M150 460 C140 190 400 60 500 60 C600 60 860 190 850 460 L150 460 Z" 
           fill="black" 
@@ -394,8 +377,6 @@ export const Mascot: React.FC<MascotProps> = ({
           d="M170 450 C165 220 410 100 500 100 C590 100 835 220 830 450 Z" 
           fill="url(#silkGrad)" 
         />
-
-        {/* Center Seam */}
         <path 
           d="M500 100 Q520 270 500 450" 
           stroke="black" 
@@ -412,8 +393,6 @@ export const Mascot: React.FC<MascotProps> = ({
           opacity="0.2" 
           fill="none" 
         />
-
-        {/* Front Band/Wrap */}
         <path 
           d="M155 400 Q500 360 845 400 L845 460 Q500 420 155 460 Z" 
           fill="black" 
@@ -422,8 +401,6 @@ export const Mascot: React.FC<MascotProps> = ({
           d="M170 415 Q500 380 830 415 L830 445 Q500 410 170 445 Z" 
           fill="#333" 
         />
-
-        {/* Du-rag Ties */}
         <path 
           d="M840 420 Q950 490 900 690 L850 660 Q880 520 800 420 Z" 
           fill="black" 
@@ -432,8 +409,6 @@ export const Mascot: React.FC<MascotProps> = ({
           d="M825 420 Q930 480 885 670 L845 645 Q865 510 790 420 Z" 
           fill="url(#silkGrad)" 
         />
-
-        {/* Highlight Shimmers */}
         <path d="M300 190 Q400 140 450 160" stroke="white" strokeWidth="4" opacity="0.1" fill="none" />
         <path d="M600 190 Q700 240 750 290" stroke="white" strokeWidth="6" opacity="0.1" fill="none" />
       </g>
