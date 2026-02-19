@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build", "tailwind build style.css -o dist/style.css && cp index.html dist/index.html",
+    "build": "tailwind build style.css -o dist/style.css && cp index.html dist/index.html",
      "start": "npx serve",
     "preview": "vite preview"
   },
