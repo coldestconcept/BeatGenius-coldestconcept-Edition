@@ -30,6 +30,18 @@ export interface RecipeParameters {
   mixingAdvice: string;
 }
 
+export interface DrumPattern {
+  kick: number[];
+  snare: {
+    isClap: boolean;
+    steps: number[];
+  };
+  hiHat: {
+    isDoubleTime: boolean;
+    steps: number[];
+  };
+}
+
 export interface BeatRecipe {
   title: string;
   style: string;
@@ -39,11 +51,45 @@ export interface BeatRecipe {
     processing: SignalChainStep[];
   }[];
   mastering: string[];
+  artistTypes: string[];
+  drumPatterns: {
+    intro: DrumPattern;
+    verse: DrumPattern;
+    hook: DrumPattern;
+    bridge: DrumPattern;
+    outro: DrumPattern;
+  };
 }
 
 export interface Folder {
   id: string;
   name: string;
+  color?: string;
+}
+
+export interface UIPreset {
+  id: string;
+  name: string;
+  theme: AppTheme;
+  grillStyle: string;
+  knifeStyle: string;
+  duragStyle: string;
+  pendantStyle: string;
+  chainStyle: string;
+  saberColor: string;
+  showChain: boolean;
+  highEyes: boolean;
+  isCigarEquipped: boolean;
+  showChefHat: boolean;
+  bubbleColor: string;
+  createdAt: string;
+}
+
+export interface SharedSession {
+  recipe: SavedRecipe;
+  senderPlugins: VSTPlugin[];
+  preset: UIPreset;
+  senderName: string;
 }
 
 export interface SavedRecipe extends BeatRecipe {
@@ -51,6 +97,8 @@ export interface SavedRecipe extends BeatRecipe {
   savedAt: string;
   bubbleColor: string;
   folderId?: string;
+  parameters?: RecipeParameters;
+  linkedPresetId?: string;
 }
 
 export interface HistoryItem extends BeatRecipe {
@@ -67,6 +115,12 @@ export interface RecommendationResponse {
   recipes: BeatRecipe[];
 }
 
-export type AppTheme = 'coldest' | 'crazy-bird';
+export type AppTheme = 'coldest' | 'crazy-bird' | 'hustle-time' | 'chef-mode';
 
-export type KnifeStyle = 'standard' | 'gold' | 'bloody' | 'adamant' | 'mythril' | 'samuels-saber';
+export type KnifeStyle = 'standard' | 'gold' | 'bloody' | 'adamant' | 'mythril' | 'samuels-saber' | 'steak-knife';
+
+export type PendantStyle = 'silver' | 'gold' | 'rose-gold';
+
+export type ChainStyle = 'silver' | 'gold' | 'rose-gold';
+
+export type DuragStyle = 'standard' | 'royal-green' | 'dragonball-purple';
